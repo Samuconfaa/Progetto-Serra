@@ -1,83 +1,135 @@
-# Serra Smart – Sistema per Monitoraggio Ambientale
+# README SERRA
 
-**Serra Smart** è un sistema progettato per il monitoraggio ambientale di una serra. Il sistema acquisisce dati da sensori fisici, li trasmette attraverso una rete sicura e li visualizza in tempo reale tramite un'interfaccia web.
+# Serra Smart – Sistema per monitoraggio ambientale
 
-Il progetto integra componenti hardware e software seguendo un’architettura **client-server**, utilizzando Arduino, RasberryPI e una VPS Ubuntu .
+## Descrizione del progetto
 
----
+**Serra Smart** è un sistema per il monitoraggio ambientale di una serra, progettato per acquisire dati da sensori fisici, trasmetterli tramite rete e visualizzarli in tempo reale attraverso una dashboard web.
 
-## Architettura del Sistema
-
-Il sistema è strutturato su quattro livelli principali:
-
-### 1. Livello di Acquisizione (Arduino)
-* **Lettura sensori:**
-    * Fotoresistenza (Luce)
-    * Sensore DHT (Temperatura e Umidità)
-* **Comunicazione:** Invio dei dati grezzi tramite comunicazione seriale USB a Rasberry.
-
-### 2. Livello di Gateway (Raspberry Pi)
-* **Script Python:** Legge i dati dalla seriale, effettua la validazione e la conversione dei valori.
-* **Trasmissione:** Invia i dati al backend tramite richieste HTTP POST.
-* **Ruolo:** Funge da ponte tra arduino e la rete internet.
-
-### 3. Livello Backend (VPS – ASP.NET Core)
-* **API REST:** Sviluppata in ASP.NET Core.
-* **Endpoint:**
-    * `POST`: Ricezione dati dai sensori.
-    * `GET`: Erogazione dati al frontend.
-* **Sicurezza:**
-    * Autenticazione tramite **Token** per le richieste in scrittura.
-    * Connessione protetta via **HTTPS**.
-    * Deploy su VPS Linux con **Nginx** come reverse proxy.
-
-### 4. Livello Frontend (Sito Web)
-* **Interfaccia:** Web responsive progettata per una visualizzazione chiara su ogni dispositivo.
-* **Visualizzazione:** Dashboard con valori in tempo reale e grafico storico dell’andamento dei dati.
-* **Tecnologie:** HTML, CSS, JavaScript.
+Il progetto integra componenti hardware e software seguendo un’architettura ****client-server****, utilizzando Arduino, RasberryPI e una VPS Ubuntu .
 
 ---
 
-## Tecnologie Utilizzate
+## Architettura del sistema
 
-| Hardware | Software | Infrastruttura |
-| :--- | :--- | :--- |
-| Arduino | Python 3 | Linux (Ubuntu Server) |
-| Raspberry Pi | ASP.NET Core | Nginx (Reverse Proxy) |
-| Sensore DHT (Temp/Hum) | Chart.js | Cloudflare (HTTPS/Proxy) |
-| Fotoresistenza (LDR) | HTML5 / CSS3 / JS | - |
+Il sistema è suddiviso in quattro livelli principali:
+
+### 1. Livello di acquisizione (Arduino)
+
+- Lettura dei sensori:
+    - Fotoresistenza (luminosità)
+    - Sensore DHT (temperatura e umidità)
+- Elaborazione dei valori analogici e digitali
+- Invio dei dati tramite comunicazione seriale USB
+
+### 2. Livello di gateway (Raspberry Pi)
+
+- Script Python che:
+    - legge i dati dalla porta seriale
+    - valida e converte i valori
+    - invia i dati all’API tramite richieste HTTP POST
+- Funzione di gateway tra hardware e rete
+- Separazione delle credenziali tramite file di configurazione escluso dal controllo di versione
+
+### 3. Livello backend (VPS – ASP.NET Core)
+
+- API REST sviluppata in ASP.NET Core
+- Funzionalità principali:
+    - ricezione dei dati tramite POST
+    - memorizzazione temporanea in memoria
+    - esposizione dei dati tramite GET
+- Sicurezza:
+    - autenticazione tramite token per le richieste POST
+    - connessione HTTPS
+- Deploy su VPS Linux con reverse proxy Nginx
+
+### 4. Livello frontend (Dashboard web)
+
+- Sito web responsive accessibile da browser
+- Visualizzazione:
+    - valori ambientali in tempo reale
+    - andamento storico tramite grafico dinamico
+- Funzionalità avanzate:
+    - grafico multi-asse (luminosità su asse separato)
+    - attivazione/disattivazione delle grandezze
+    - reset del grafico lato frontend
+- Tecnologie utilizzate:
+    - HTML
+    - CSS
+    - JavaScript
 
 ---
 
-## Flusso di Funzionamento
+## Tecnologie utilizzate
 
-1. **Arduino** legge i valori dai sensori ogni 5 secondi.
-2. I dati vengono inviati via **seriale** al Raspberry Pi.
-3. Il **Raspberry Pi** invia i dati all'API tramite HTTPS e Token.
-4. L'**API** valida e memorizza temporaneamente i dati ricevuti.
-5. Il **Sito Web** interroga periodicamente l’API con richieste GET.
-6. I dati vengono visualizzati in tempo reale e tramite grafici dinamici.
+### Hardware
+
+- Arduino
+- Raspberry Pi
+- Sensore DHT (temperatura e umidità)
+- Fotoresistenza (LDR)
+
+### Software
+
+- Python 3
+- ASP.NET Core
+- Nginx (reverse proxy)
+- Chart.js
+- HTML / CSS / JavaScript
+- Linux (Ubuntu Server)
+- Cloudflare (HTTPS e proxy)
 
 ---
 
-## Endpoint API
+## Funzionamento del sistema
 
-### `POST /api/serra/`
-Utilizzato dal Raspberry Pi per inviare i dati.
-* **Auth:** Richiede Header `Authorization` con token.
-* **Payload:** JSON contenente luce, temperatura e umidità.
+1. Arduino legge i valori dei sensori a intervalli regolari
+2. I dati vengono inviati via seriale al Raspberry Pi
+3. Il Raspberry Pi invia i dati all’API tramite HTTPS e token di autenticazione
+4. L’API valida e memorizza temporaneamente i dati
+5. Il sito web interroga periodicamente l’API tramite richieste GET
+6. I dati vengono visualizzati in tempo reale e tramite grafici interattivi
 
-### `GET /api/serra/`
-Utilizzato dal sito web per recuperare lo storico dei dati e quelli attuali.
-* **Auth:** Non richiede autenticazione (sola lettura).
+---
+
+## API REST
+
+### POST /api/serra/
+
+- Utilizzato dal Raspberry Pi
+- Riceve i dati dei sensori in formato JSON
+- Protetto tramite token di autenticazione
+
+### GET /api/serra/
+
+- Utilizzato dal sito web
+- Restituisce lo storico dei dati
+- Non richiede autenticazione
 
 ---
 
 ## Sicurezza
-* **HTTPS:** Comunicazione cifrata tra gateway, server e client.
-* **Token Auth:** Impedisce l'invio di dati da fonti non autorizzate.
-* **Reverse Proxy:** Utilizzo di Nginx per isolare il backend e non esporlo direttamente a Internet.
+
+- Comunicazione cifrata tramite HTTPS
+- Autenticazione a token per impedire invii non autorizzati
+- Separazione delle credenziali dal codice sorgente
+- Backend non esposto direttamente a Internet grazie a reverse proxy
 
 ---
 
-**Autore:** *Progetto realizzato da Samuele Confalonieri come sistema completo per il monitoraggio ambientale, integrando hardware, backend, networking e frontend web.*
+## Interfaccia web
+
+La dashboard web consente:
+
+- visualizzazione immediata dei valori correnti
+- analisi dell’andamento nel tempo tramite grafico
+- selezione delle grandezze da visualizzare
+- azzeramento del grafico senza interrompere la raccolta dati
+
+Il grafico utilizza assi separati per gestire correttamente grandezze con scale diverse, migliorando la leggibilità.
+
+---
+
+## Autore
+
+*Progetto realizzato da Confalonieri Samuele per il monitoraggio ambientale di una serra.*
