@@ -8,32 +8,41 @@
 </head>
 <body>
 
-  <header>
-    <h1>Serra Smart</h1>
-    <p>Dati in tempo reale</p>
-  </header>
+<header>
+  <h1>Serra Smart</h1>
+  <p>Monitoraggio ambientale in tempo reale</p>
+</header>
 
-  <main>
-    <div class="cards">
-      <div class="card">
-        <h2>🌡 Temperatura</h2>
-        <span id="temp">-- °C</span>
-      </div>
+<main>
 
-      <div class="card">
-        <h2>💧 Umidità</h2>
-        <span id="hum">-- %</span>
-      </div>
-
-      <div class="card">
-        <h2>☀ Luce</h2>
-        <span id="lux">--</span>
-      </div>
+  <section class="cards">
+    <div class="card">
+      <h2>Temperatura</h2>
+      <span id="temp">-- °C</span>
     </div>
+    <div class="card">
+      <h2>Umidità</h2>
+      <span id="hum">-- %</span>
+    </div>
+    <div class="card">
+      <h2>Luminosità</h2>
+      <span id="lux">--</span>
+    </div>
+  </section>
 
+  <section class="controls">
+    <label><input type="checkbox" id="chkTemp" checked> Temperatura</label>
+    <label><input type="checkbox" id="chkHum" checked> Umidità</label>
+    <label><input type="checkbox" id="chkLux" checked> Luminosità</label>
+    <button id="resetBtn">Reset grafico</button>
+  </section>
+
+  <section class="chart-container">
     <canvas id="chart"></canvas>
-  </main>
+  </section>
 
-  <script src="app.js"></script>
+</main>
+
+<script src="app.js"></script>
 </body>
 </html>
