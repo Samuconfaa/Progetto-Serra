@@ -1,0 +1,6 @@
+@ProgettoSerraAPI_HostAddress = http://localhost:5207
+
+GET {{ProgettoSerraAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
