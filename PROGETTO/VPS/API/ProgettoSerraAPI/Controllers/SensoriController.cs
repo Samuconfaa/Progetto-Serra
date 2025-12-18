@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProgettoSerraAPI.Models;
+using ProgettoSerraAPI.Services;
 
 namespace ProgettoSerraAPI.Controllers
 {
@@ -13,11 +14,20 @@ namespace ProgettoSerraAPI.Controllers
             if (dato == null)
                 return BadRequest();
 
-            Console.WriteLine(
-                $"Luce={dato.Luce}, Temp={dato.Temperatura}, Umid={dato.Umidita}, Time={dato.Timestamp}"
-            );
+            dato.Timestamp = DateTime.UtcNow;
+
+            SensoriStore.Dati.Add(dato);
+
+            if (SensoriStore.Dati.Count > 300)
+                SensoriStore.Dati.RemoveAt(0);
 
             return Ok(new { status = "ok" });
+        }
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok(SensoriStore.Dati);
         }
     }
 }
