@@ -2,6 +2,8 @@ import serial
 import requests
 import time
 import sys
+from config import API_TOKEN, API_URL
+
 
 # =========================
 # CONFIGURAZIONE
@@ -10,8 +12,6 @@ import sys
 SERIAL_PORT = "/dev/ttyUSB0"   
 BAUDRATE = 9600
 
-API_URL = "https://samuconfa.it/api/serra/"
-API_TOKEN = "AHvxK3A9XKlbFjK73e6fO3mW90N3WS"
 
 SERIAL_TIMEOUT = 2
 RETRY_DELAY = 5
@@ -29,7 +29,7 @@ def open_serial():
                 timeout=SERIAL_TIMEOUT
             )
             print(f"[OK] Seriale aperta su {SERIAL_PORT}")
-            time.sleep(2)  # tempo reset Arduino
+            time.sleep(2)  
             return ser
         except serial.SerialException as e:
             print(f"[ERRORE] Seriale non disponibile: {e}")
@@ -54,7 +54,6 @@ def main():
             if not line:
                 continue
 
-            # Formato atteso: luce;temperatura;umidita
             parts = line.split(";")
             if len(parts) != 3:
                 print(f"[SCARTATO] Formato non valido: {line}")

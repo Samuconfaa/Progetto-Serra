@@ -26,6 +26,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 
+# File di configurazione sensibile
+config.py
+
 # Escludi il file di configurazione principale
 appsettings.json
 
